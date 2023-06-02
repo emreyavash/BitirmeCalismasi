@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  eticaretdb: 
+    image: mongo
+
+  eticaret.products:
+    image: ${DOCKER_REGISTRY-}eticaretproducts
+    build:
+      context: .
+      dockerfile: ETicaret.Products/Dockerfile
+
+  eticaret.categories:
+    image: ${DOCKER_REGISTRY-}eticaretcategories
+    build:
+      context: .
+      dockerfile: ETicaret.Categories/Dockerfile
+
