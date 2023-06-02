@@ -1,13 +1,15 @@
-﻿using ETicaret.Domain.Entities.Base;
+﻿using MediatR;
+using Ordering.Application.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaret.Domain.Entities
+namespace Ordering.Application.Commands.OrderCreate
 {
-    public class Order : Entity
+    public class OrderCreateCommand : IRequest<OrderResponse>
     {
         public string ProductId { get; set; }
         public string UserId { get; set; }

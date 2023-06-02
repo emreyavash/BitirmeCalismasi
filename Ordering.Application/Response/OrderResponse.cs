@@ -1,18 +1,18 @@
-﻿using ETicaret.Domain.Entities.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaret.Domain.Entities
+namespace Ordering.Application.Response
 {
-    public class Order : Entity
+    public class OrderResponse
     {
-        public string ProductId { get; set; }
+        public string Id { get; set; }
         public string UserId { get; set; }
-        public decimal TotalPrice { get; set; }
+        public string ProductId { get; set; }
         public decimal UnitPrice { get; set; }
+        public decimal TotalPrice { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

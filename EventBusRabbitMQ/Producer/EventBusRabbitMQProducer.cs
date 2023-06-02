@@ -28,7 +28,7 @@ namespace EventBusRabbitMQ.Producer
         }
         public void Publish(string queueName, IEvent @event)
         {
-            if (!_persistentConnection.isConnected)
+            if (!_persistentConnection.IsConnected)
             {
                 _persistentConnection.TryConnect();
             }

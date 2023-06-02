@@ -29,7 +29,7 @@ namespace EventBusRabbitMQ
             _logger = logger;
         }
 
-        public bool isConnected
+        public bool IsConnected
         {
             get
             {
@@ -39,7 +39,7 @@ namespace EventBusRabbitMQ
 
         public IModel CreateModel()
         {
-            if (!isConnected)
+            if (!IsConnected)
             {
                 throw new InvalidOperationException("No RabbitMQ connections are available to perform this action");
             }
@@ -73,7 +73,7 @@ namespace EventBusRabbitMQ
             {
                 _connection = _collectionFactory.CreateConnection();
             });
-            if (isConnected)
+            if (IsConnected)
             {
                 _connection.ConnectionShutdown += OnConnectionShutdown;
                 _connection.CallbackException += OnCallbackException;

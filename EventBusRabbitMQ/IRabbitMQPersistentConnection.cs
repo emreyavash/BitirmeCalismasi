@@ -9,7 +9,7 @@ namespace EventBusRabbitMQ
 {
     public interface IRabbitMQPersistentConnection : IDisposable
     {
-        bool isConnected { get; }
+        bool IsConnected { get; }
         bool TryConnect();
         IModel CreateModel();
     }
