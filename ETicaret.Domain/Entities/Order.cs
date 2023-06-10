@@ -9,10 +9,9 @@ namespace ETicaret.Domain.Entities
 {
     public class Order : Entity
     {
-        public string ProductId { get; set; }
         public string UserId { get; set; }
         public decimal TotalPrice { get; set; }
-        public decimal UnitPrice { get; set; }
+        public bool OrderComplete { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

@@ -41,21 +41,21 @@ namespace ETicaret.Orders.Consumers
 
     private async void ReceivedEvent(object sender, BasicDeliverEventArgs e)
     {
-        var message = Encoding.UTF8.GetString(e.Body.Span);
-        var @event = JsonConvert.DeserializeObject<OrderCreateEvent>(message);
+            var message = Encoding.UTF8.GetString(e.Body.Span);
+            var @event = JsonConvert.DeserializeObject<OrderCreateEvent>(message);
 
-        if (e.RoutingKey == EventBusConstants.OrderCreateQueue)
-        {
-            var command = _mapper.Map<OrderCreateCommand>(@event);
+            if (e.RoutingKey == EventBusConstants.OrderCreateQueue)
+            {
+                var command = _mapper.Map<OrderCreateCommand>(@event);
 
-            command.CreatedAt = DateTime.Now;
-            command.TotalPrice = @event.Quantity * @event.Price;
-            command.UnitPrice = @event.Price;
+                command.CreatedAt = DateTime.Now;
+                command.TotalPrice = @event.TotalPrice;
+                command.OrderComplete = true;
 
-            var result = await _mediator.Send(command);
+                var result = await _mediator.Send(command);
+            }
+
         }
-
-    }
 
     public void Disconnect()
     {

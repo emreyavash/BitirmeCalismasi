@@ -5,7 +5,11 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "eticaret.categories": "StartDebugging",
-        "eticaret.products": "StartDebugging"
+        "eticaret.products": "StartDebugging",
+        "eticaret.identities": "StartDebugging",
+        "eticaret.orders": "StartDebugging",
+        "eticaret.users": "StartDebugging",
+        "eticaret.baskets": "StartDebugging"
       }
     }
   }

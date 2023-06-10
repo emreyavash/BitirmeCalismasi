@@ -1,9 +1,13 @@
-﻿using ETicaret.Identities.DTOs;
+﻿using AutoMapper;
+using ETicaret.Identities.DTOs;
 using ETicaret.Identities.Repositories.Interface;
-using ETicaret.Users.Entities;
+using EventBusRabbitMQ.Core;
+using EventBusRabbitMQ.Events;
+using EventBusRabbitMQ.Producer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text;
 
 namespace ETicaret.Identities.Controllers
 {
@@ -11,34 +15,35 @@ namespace ETicaret.Identities.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        //private readonly IAuthRepository _authRepository;
-        //private readonly ILogger<AuthController> _logger;
+        private readonly ILogger<AuthController> _logger;
+        private readonly EventBusRabbitMQProducer _eventBus;
+        public AuthController( ILogger<AuthController> logger, EventBusRabbitMQProducer eventBus)
+        {
+            _logger = logger;
+            _eventBus = eventBus;
+        }
 
-        //public AuthController(IAuthRepository authRepository, ILogger<AuthController> logger)
-        //{
-        //    _authRepository = authRepository;
-        //    _logger = logger;
-        //}
+        [HttpPost("Register")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public  ActionResult Register(UserForRegisterDto userForRegisterDto)
+        {
+            UserCreateEvent eventMessage = new UserCreateEvent();
+            eventMessage.Email = userForRegisterDto.Email;
+            eventMessage.FirstName = userForRegisterDto.FirstName;
+            eventMessage.LastName = userForRegisterDto.LastName;
+            eventMessage.Password = userForRegisterDto.Password;        
+            try
+            {
+                _eventBus.Publish(EventBusConstants.UserCreateQueue,eventMessage);
+            }
+            catch (Exception ex)
+            {
 
-        //[HttpPost("Register")]
-        //[ProducesResponseType(typeof(User),(int)HttpStatusCode.OK)]
-        //[ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        //public async Task<ActionResult<User>> Register(UserForRegisterDto userForRegisterDto)
-        //{
-        //    var userExist = await _authRepository.UserExists(userForRegisterDto.Email);
-        //    if (!userExist)
-        //    {
-        //        _logger.LogError("Kayıtlı Kullanıcı");
-        //        return BadRequest();
-        //    }
-        //    var registerResult = _authRepository.RegisterAsync(userForRegisterDto, userForRegisterDto.Password);
-        //    var result = _authRepository.CreateAccessToken();
-
-        //    if(result !=null)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest("Kayıt olunamadı");
-        //}
+                _logger.LogError(ex, "ERROR Publishing integration event: {EventFirstname} from {AppName}", eventMessage.FirstName, "Ticaret");
+                throw;
+            }
+            return Ok("Başarılı bir şekilde kayıt oluşturuldu.");
+        }
     }
 }

@@ -21,10 +21,10 @@ namespace ETicaret.Orders.Controllers
             _logger = logger;
         }
 
-        [HttpGet("GetOrdersByUserName/{userName}")]
+        [HttpGet("GetOrdersByUserName/{userId}")]
         [ProducesResponseType(typeof(IEnumerable<OrderResponse>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrdersByUserName(string userId)
+        public async Task<ActionResult<IEnumerable<OrderResponse>>> GetOrdersByUserId(string userId)
         {
             var query = new GetOrdersByUserIdQuery(userId);
             var orders = await _mediator.Send(query);
@@ -36,7 +36,7 @@ namespace ETicaret.Orders.Controllers
             return Ok(orders);
         }
 
-        [HttpPost]
+        [HttpPost("OrderCreate")]
         [ProducesResponseType(typeof(OrderResponse), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<OrderResponse>> OrderCreate([FromBody] OrderCreateCommand command)
         {

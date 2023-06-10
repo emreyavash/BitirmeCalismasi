@@ -9,10 +9,46 @@ services:
     build:
       context: .
       dockerfile: ETicaret.Products/Dockerfile
+  rabbitmq:
+    image: rabbitmq:3-management
+
+  redisdb:
+    image: redis
+
+  eticaretsqldb:
+    image: mcr.microsoft.com/mssql/server
 
   eticaret.categories:
     image: ${DOCKER_REGISTRY-}eticaretcategories
     build:
       context: .
       dockerfile: ETicaret.Categories/Dockerfile
+
+
+  eticaret.identities:
+    image: ${DOCKER_REGISTRY-}eticaretidentities
+    build:
+      context: .
+      dockerfile: ETicaret.Identities/Dockerfile
+
+
+  eticaret.orders:
+    image: ${DOCKER_REGISTRY-}eticaretorders
+    build:
+      context: .
+      dockerfile: ETicaret.Orders/Dockerfile
+
+
+  eticaret.users:
+    image: ${DOCKER_REGISTRY-}eticaretusers
+    build:
+      context: .
+      dockerfile: ETicaret.Users/Dockerfile
+
+
+  eticaret.baskets:
+    image: ${DOCKER_REGISTRY-}eticaretbaskets
+    build:
+      context: .
+      dockerfile: ETicaret.Baskets/Dockerfile
 

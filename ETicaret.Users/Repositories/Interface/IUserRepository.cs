@@ -1,4 +1,5 @@
 ﻿using ETicaret.Users.Entities;
+using ETicaret.Users.Entities.DTOs;
 
 namespace ETicaret.Users.Repositories.Interface
 {
@@ -10,5 +11,6 @@ namespace ETicaret.Users.Repositories.Interface
         Task<bool> UpdateUser(User user);
         Task AddUser(User user);
         Task<User> GetUserByMail(string mail);
+        Task Register(UserForRegisterDTO user,string password);
     }
 }

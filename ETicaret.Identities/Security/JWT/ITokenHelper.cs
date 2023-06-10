@@ -1,4 +1,5 @@
-﻿using ETicaret.Users.Entities;
+﻿
+using ETicaret.Identities.Entities;
 
 namespace ETicaret.Identities.Security.JWT
 {

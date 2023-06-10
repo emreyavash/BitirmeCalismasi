@@ -1,6 +1,8 @@
 ﻿using ETicaret.Users.Data.Interface;
 using ETicaret.Users.Entities;
+using ETicaret.Users.Entities.DTOs;
 using ETicaret.Users.Repositories.Interface;
+using ETicaret.Users.Security.Hashing;
 using MongoDB.Driver;
 
 namespace ETicaret.Users.Repositories
@@ -49,6 +51,27 @@ namespace ETicaret.Users.Repositories
             var updateUser = await _context.Users.ReplaceOneAsync(filter: x => x.Id == user.Id, replacement: user);
             return updateUser.IsAcknowledged && updateUser.ModifiedCount>0;
 
+        }
+        public async Task Register(UserForRegisterDTO user,string password)
+        {
+            var checkUser = GetUserByMail(user.Email).Result;
+            if (checkUser != null)
+            {
+                throw new Exception("Kayıtlı kullanıcı");
+            }
+            byte[] passwordHash, passwordSalt;
+
+            HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            var getuser = new User
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Status = true
+            };
+            await AddUser(getuser);
         }
     }
 }

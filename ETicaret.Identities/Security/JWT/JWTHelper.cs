@@ -1,5 +1,5 @@
-﻿using ETicaret.Identities.Security.Encryption;
-using ETicaret.Users.Entities;
+﻿using ETicaret.Identities.Entities;
+using ETicaret.Identities.Security.Encryption;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

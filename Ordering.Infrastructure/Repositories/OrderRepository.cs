@@ -17,6 +17,12 @@ namespace Ordering.Infrastructure.Repositories
         {
         }
 
+        public async Task CompleteOrder(Order order)
+        {
+            await _dbContext.Orders.AddAsync(order);
+
+        }
+
         public async Task<IEnumerable<Order>> GetOrdersByUserId(string userId)
         {
             var orderList = await _dbContext.Orders.Where(x => x.UserId == userId).ToListAsync();

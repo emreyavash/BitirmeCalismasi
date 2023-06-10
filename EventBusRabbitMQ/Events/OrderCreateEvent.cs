@@ -11,9 +11,9 @@ namespace EventBusRabbitMQ.Events
     {
         public string Id { get; set; }
         public string UserId { get; set; }
-        public string ProductId { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
+        public decimal TotalPrice { get; set; }
+        public bool OrderComplete { get; set; }
+
         public DateTime CreatedAt { get; set; }
     }
 }

@@ -9,29 +9,108 @@ services:
         - ${WEBAPP_STORAGE_HOME}/site:/data/db
     ports:
         - "27017:27017" 
-  eticaret.products:
-    container_name: products
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+  redisdb:
+    container_name: redisdb
+    restart: always
+    ports:
+       - "6379:6379"
+  eticaretsqldb:
+    container_name: eticaretsqldb
+    ports:
+        - "1433:1433"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - "ProductDatabaseSettings:ConnectionString=mongodb://eticaretdb:27017"
+      SA_PASSWORD: "Odb12345678"
+      ACCEPT_EULA: "Y"
+
+  eticaret.products:
+    container_name: eticaret.products
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - "ProductDatabaseSettings:ConnectionString=mongodb://eticaretdb:27017"
     depends_on:
         - eticaretdb
     
     ports:
-      - "8000:80"
+        - "8000:80"
     volumes:
-     - ${HOME}/Microsoft/UserSecrets:/root/.microsoft/usersecrets
-     - ${HOME}/ASP.NET/Https:/root/.aspnet/https
+        - ${HOME}/Microsoft/UserSecrets:/root/.microsoft/usersecrets
+        - ${HOME}/ASP.NET/Https:/root/.aspnet/https
 
   eticaret.categories:
-    container_name: categories
+    container_name: eticaret.categories
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - "CategoryDatabaseSettings:ConnectionString=mongodb://eticaretdb:27017"
+        - ASPNETCORE_ENVIRONMENT=Development
+        - "CategoryDatabaseSettings:ConnectionString=mongodb://eticaretdb:27017"
     depends_on:
         - eticaretdb
     ports:
-      - "8001:80"
+        - "8001:80"
     volumes:
-      - ${HOME}/Microsoft/UserSecrets:/root/.microsoft/usersecrets
-      - ${HOME}/ASP.NET/Https:/root/.aspnet/https
+        - ${HOME}/Microsoft/UserSecrets:/root/.microsoft/usersecrets
+        - ${HOME}/ASP.NET/Https:/root/.aspnet/https
+
+  eticaret.identities:
+    container_name: eticaret.identities
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - "EventBus:HostName=rabbitmq"
+    ports:
+        - "8002:80"
+    depends_on:
+        - rabbitmq
+    volumes:
+        - ${HOME}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+        - ${HOME}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  eticaret.orders:
+    container_name: eticaret.orders
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - "ConnectionStrings:OrderConnection=Server=eticaretsqldb;Database=OrderBitirmeDb;User Id=sa;Password=Odb12345678;TrustServerCertificate=True;"
+        - "EventBus:HostName=rabbitmq"
+    ports:
+        - "8003:80"
+    depends_on:
+        - eticaretsqldb
+        - rabbitmq
+    volumes:
+        - ${HOME}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+        - ${HOME}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  eticaret.users:
+    container_name: eticaret.users
+
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - "UserDatabaseSettings:ConnectionString=mongodb://eticaretdb:27017"
+        - "EventBus:HostName=rabbitmq"
+        
+    ports:
+        - "8004:80"
+    depends_on:
+        - eticaretdb
+        - rabbitmq
+    volumes:
+        - ${HOME}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+        - ${HOME}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  eticaret.baskets:
+    container_name: eticaret.basket
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "RedisSettings:ConnectionString=redisdb"
+      - "EventBus:HostName=rabbitmq"
+    ports:
+      - "8005:80"
+    depends_on:
+      - redisdb
+      - rabbitmq
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

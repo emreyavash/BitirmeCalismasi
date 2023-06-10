@@ -1,6 +1,6 @@
 ﻿using ETicaret.Identities.DTOs;
+using ETicaret.Identities.Entities;
 using ETicaret.Identities.Security.JWT;
-using ETicaret.Users.Entities;
 using EventBusRabbitMQ.Events;
 
 namespace ETicaret.Identities.Repositories.Interface

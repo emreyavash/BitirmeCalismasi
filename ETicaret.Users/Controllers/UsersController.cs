@@ -1,5 +1,8 @@
-﻿using ETicaret.Users.Entities;
+﻿using ETicaret.Users.Consumers;
+using ETicaret.Users.Entities;
+using ETicaret.Users.Entities.DTOs;
 using ETicaret.Users.Repositories.Interface;
+using ETicaret.Users.Security.Hashing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -11,14 +14,13 @@ namespace ETicaret.Users.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        private readonly Logger<UsersController> _logger;
-
-        public UsersController(IUserRepository userRepository, Logger<UsersController> logger)
+        private readonly ILogger<UsersController> _logger;
+        public UsersController(IUserRepository userRepository, ILogger<UsersController> logger)
         {
             _userRepository = userRepository;
             _logger = logger;
         }
-        [HttpGet("GetUser")]
+        [HttpGet("GetUsers")]
         [ProducesResponseType(typeof(User), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -37,7 +39,7 @@ namespace ETicaret.Users.Controllers
         public async Task<ActionResult<User>> GetUserById(string id)
         {
             var user = await _userRepository.GetUserById(id);
-            if (user != null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -49,8 +51,9 @@ namespace ETicaret.Users.Controllers
         {
             var deleteUser = await _userRepository.DeleteUser(id);
             return Ok(deleteUser);
-        }
-        [HttpDelete("Update")]
+        } 
+
+        [HttpPut("Update")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> UpdateUser([FromBody] User user)
         {

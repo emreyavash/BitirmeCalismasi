@@ -9,9 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ordering.Application.Commands.OrderCreate
+namespace Ordering.Application.Handlers
 {
-    public class GetOrdersByUserIdHandler : IRequestHandler<GetOrdersByUserIdQuery,IEnumerable<OrderResponse>>
+    public class GetOrdersByUserIdHandler : IRequestHandler<GetOrdersByUserIdQuery, IEnumerable<OrderResponse>>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;

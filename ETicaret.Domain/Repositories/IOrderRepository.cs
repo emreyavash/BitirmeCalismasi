@@ -11,5 +11,6 @@ namespace ETicaret.Domain.Repositories
     public interface IOrderRepository : IRepository<Order>
     {
         Task<IEnumerable<Order>> GetOrdersByUserId(string userId);
+        Task CompleteOrder(Order order);
     }
 }
